@@ -61,47 +61,48 @@ uint8_t const * tud_descriptor_device_cb(void)
 //--------------------------------------------------------------------+
 enum
 {
+  // Console
   ITF_NUM_CDC_0 = 0,
   ITF_NUM_CDC_0_DATA,
 
+  // SWD/JTAG via Picoprobe
   ITF_NUM_PROBE,
-    ITF_NUM_CDC_1,
+
+  // UART
+  ITF_NUM_CDC_1,
   ITF_NUM_CDC_1_DATA,
-//   ITF_NUM_CDC_2_DATA,
+
   ITF_NUM_TOTAL
 };
 
 #define CONFIG_TOTAL_LEN    (TUD_CONFIG_DESC_LEN + (CFG_TUD_CDC * TUD_CDC_DESC_LEN) + TUD_VENDOR_DESC_LEN)
 
+// Interfaces 0/1
 #define EPNUM_CDC_0_NOTIF   0x81
 #define EPNUM_CDC_0_OUT     0x02
 #define EPNUM_CDC_0_IN      0x83
 
-  #define EPNUM_CDC_1_NOTIF   0x86
-  #define EPNUM_CDC_1_OUT     0x07
-  #define EPNUM_CDC_1_IN      0x88
-
+// Interface 2
 #define EPNUM_PROBE_OUT     0x04
 #define EPNUM_PROBE_IN      0x85
-//   #define EPNUM_CDC_2_NOTIF   0x85
-//   #define EPNUM_CDC_2_OUT     0x06
-//   #define EPNUM_CDC_2_IN      0x86
 
-uint8_t const desc_fs_configuration[] =
-{
+// Interface 3/4
+#define EPNUM_CDC_1_NOTIF   0x86
+#define EPNUM_CDC_1_OUT     0x07
+#define EPNUM_CDC_1_IN      0x88
+
+uint8_t const desc_fs_configuration[] = {
   // Config number, interface count, string index, total length, attribute, power in mA
   TUD_CONFIG_DESCRIPTOR(1, ITF_NUM_TOTAL, 0, CONFIG_TOTAL_LEN, TUSB_DESC_CONFIG_ATT_REMOTE_WAKEUP, 100),
 
-  // 1st CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  // Interface 0/1, CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_0, 4, EPNUM_CDC_0_NOTIF, 8, EPNUM_CDC_0_OUT, EPNUM_CDC_0_IN, 64),
 
-  // 2nd CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-//   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 4, EPNUM_CDC_1_NOTIF, 8, EPNUM_CDC_1_OUT, EPNUM_CDC_1_IN, 64),
-  // 3rd CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
-//   TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_2, 4, EPNUM_CDC_2_NOTIF, 8, EPNUM_CDC_2_OUT, EPNUM_CDC_2_IN, 64),
-  // 4th Vendor: Picoprobe interface
+  // Interface 2, Vendor: Picoprobe interface
   TUD_VENDOR_DESCRIPTOR(ITF_NUM_PROBE, 0, EPNUM_PROBE_OUT, EPNUM_PROBE_IN, 64),
-    TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 4, EPNUM_CDC_1_NOTIF, 8, EPNUM_CDC_1_OUT, EPNUM_CDC_1_IN, 64),
+
+  // Interface 3/4, CDC: Interface number, string index, EP notification address and size, EP data address (out, in) and size.
+  TUD_CDC_DESCRIPTOR(ITF_NUM_CDC_1, 4, EPNUM_CDC_1_NOTIF, 8, EPNUM_CDC_1_OUT, EPNUM_CDC_1_IN, 64),
 };
 
 
